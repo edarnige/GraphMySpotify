@@ -8,36 +8,14 @@
     <div class="row">
         <div class="col-md-6"></div>
         <div class="col-md-6">
-            <button class="btn btn-dark float-end" (click)="openForm()">Login</button>
+            <div class="container">
+                <div *ngIf="!accessToken">
+                  <button class="btn btn-dark float-end" (click)="redirectToSpotifyLogin()">Login to Spotify</button>
+                </div>
+                <div *ngIf="accessToken">
+                  <p class="float-end">Logged in</p>
+                </div>
+              </div>
         </div>
     </div>
 </div>
-
-<div class="form-popup" id="myForm" *ngIf="openPopup">
-    <form (ngSubmit)="loginFormSubmit()" #loginForm="ngForm" class="form-container" novalidate>
-        <div class="form-header">
-            <h1>Login</h1>
-            <button type="button" class="btn cancel" (click)="closeForm()">X</button>
-        </div>
-        <p id="description">Login to Spotify to access your private playlists</p>
-
-        <label for="email"><b>Email</b></label>
-        <input type="email" placeholder="Enter Email" name="email" [(ngModel)]="email" required #emailInput="ngModel">
-
-        <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="alert alert-danger">
-            <div *ngIf="emailInput.errors?.['required']">Email is required.</div>
-            <div *ngIf="emailInput.errors?.['email']">Invalid email address.</div>
-        </div>
-
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" [(ngModel)]="password" required #passwordInput="ngModel">
-
-
-        <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="alert alert-danger">
-            <div *ngIf="passwordInput.errors?.['required']">Password is required.</div>
-        </div>
-
-        <button type="submit" class="btn" [disabled]="loginForm.invalid">Login</button>
-
-    </form>
-</div>  

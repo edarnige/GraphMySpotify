@@ -1,37 +1,56 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Make sure to import FormsModule
-
+import { FormsModule } from '@angular/forms'; 
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, 
+    FormsModule
+    ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  openPopup = false;
-  email = '';
-  password = '';
+  accessToken: string = '';
+  playlists: any[] = [];
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private loginService: LoginService,
+  ) { }
 
+  ngOnInit() {
+    // Reset the token
+    this.accessToken = '';
+    this.loginService.setToken('');
 
-  openForm() {
-    this.openPopup = true;
-    this.cdr.detectChanges(); // Manually trigger change detection
+    // Check if there is an access token in the URL 
+    const url = window.location.href;
+    const params = new URLSearchParams(url.split('#')[1]);
+    this.accessToken = params.get('access_token') || '';
+    if (this.accessToken !== '') {
+      // Set the access token
+      this.loginService.setToken(this.accessToken);
+      
+      // Get user playlists // use obervable instead?? 
+      this.loginService.getUserPlaylists().subscribe(
+      (playlists) => {
+        this.playlists = playlists.items;
+        console.log(this.playlists)
+      },
+      (error) => {
+        console.error('Error getting playlists:', error);
+      }
+    );
+    }
   }
-  
-  closeForm() {
-    this.openPopup = false;
-  }
 
-  loginFormSubmit() {
-    // Handle form submission logic here
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
-    // Add your authentication logic or API calls here
+  // Redirect user to Spotify authorization URL
+  redirectToSpotifyLogin() {
+    const authorizationUrl = this.loginService.getAuthorizationUrl();
+    window.location.href = authorizationUrl;
+    console.log('authurl', authorizationUrl);
   }
-
 }
