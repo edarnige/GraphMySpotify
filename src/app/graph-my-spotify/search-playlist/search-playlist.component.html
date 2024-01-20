@@ -1,6 +1,28 @@
+<div *ngIf="hasAccessToken">
+  <select [(ngModel)]="selectedPlaylist" class="form-control light-select">
+    <option value="" disabled>Select from your Playlists</option>
+    <option *ngFor="let playlist of playlists" [value]="playlist.id">
+      {{ playlist.name }}
+    </option>
+  </select>
+</div>
+
 <div class="input-group mb-3">
-    <input type="text" class="form-control light-input" placeholder="Playlist URL" aria-label="Playlist URL" aria-describedby="basic-addon2">
-    <div class="input-group-append">
-      <button class="btn btn-secondary" type="button">Submit</button>
-    </div>
+  <input 
+    type="text" 
+    class="form-control light-input" 
+    placeholder="Playlist URL" 
+    aria-label="Playlist URL" 
+    aria-describedby="basic-addon2"
+    [(ngModel)]="selectedPlaylist"
+  >
+  <div class="input-group-append">
+    <button 
+      class="btn btn-secondary" 
+      type="button"
+      (click)="submitPlaylist()"
+    > 
+      Submit
+    </button>
   </div>
+</div>
