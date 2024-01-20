@@ -37,17 +37,6 @@ export class LoginComponent {
       // Remove the access token from the URL
       const newUrl = window.location.origin + window.location.pathname;
       history.replaceState({}, document.title, newUrl);
-      
-      // Get user playlists // use obervable instead?? 
-      this.loginService.getUserPlaylists().subscribe(
-      (playlists) => {
-        this.playlists = playlists.items;
-        console.log(this.playlists)
-      },
-      (error) => {
-        console.error('Error getting playlists:', error);
-      }
-    );
     }
   }
 
