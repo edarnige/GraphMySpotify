@@ -33,6 +33,10 @@ export class LoginComponent {
     if (this.accessToken !== '') {
       // Set the access token
       this.loginService.setToken(this.accessToken);
+
+      // Remove the access token from the URL
+      const newUrl = window.location.origin + window.location.pathname;
+      history.replaceState({}, document.title, newUrl);
       
       // Get user playlists // use obervable instead?? 
       this.loginService.getUserPlaylists().subscribe(
