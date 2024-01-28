@@ -1,4 +1,4 @@
-interface SpotifyPlaylistItem {
+export interface SpotifyPlaylistItem {
     added_at: string;
     added_by: {
       external_urls: {

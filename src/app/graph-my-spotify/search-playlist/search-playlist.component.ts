@@ -37,7 +37,16 @@ export class SearchPlaylistComponent implements OnInit {
   }
   
   submitPlaylist() {
-    console.log('Submitted playlist:', this.selectedPlaylist);
+    this.selectedPlaylist = this.selectedPlaylist.replace("https://open.spotify.com/playlist/","");
+    this.selectedPlaylist = this.selectedPlaylist.replace(/\?si=.*/,"");
+    this.searchPlaylistService.getPlaylistItems(this.selectedPlaylist).subscribe(
+      (playlistItems) => {
+        console.log(playlistItems);
+      },
+      (error) => {
+        console.error('Error getting playlist items:', error);
+      }
+    );
   }
 
   get hasAccessToken(): boolean {
