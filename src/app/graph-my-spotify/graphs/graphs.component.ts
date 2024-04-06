@@ -20,8 +20,11 @@ export class GraphsComponent implements OnInit {
 
   playlistItemData: any[] = [];
   trackPopularities: number[] = []; // Array to store track popularities
+  explicitCount: number = 0; // Number of explicit songs in a playlist
+  playlistLength: number = 0; 
   
   public popularityHistogramData!: ChartConfiguration<'bar'>['data'] 
+  public explicitChartData!: ChartConfiguration<'pie'>['data'] 
 
   constructor(
     public playlistService: SearchPlaylistService,
@@ -51,7 +54,9 @@ export class GraphsComponent implements OnInit {
         // If next URL is available, fetch the next set of items
         this.fetchNextItems(data.next);
       } else {
-        this.extractTrackPopularities();
+        console.log("playlist item count", this.playlistItemData.length)
+        this.playlistLength = this.playlistItemData.length;
+        this.extractData();
       }
       
     });
@@ -71,24 +76,31 @@ export class GraphsComponent implements OnInit {
         // If next URL is available, recursively fetch the next set of items
         this.fetchNextItems(data.next);
       } else {
-        this.extractTrackPopularities();
+        console.log("playlist item count", this.playlistItemData.length)
+        this.playlistLength = this.playlistItemData.length;
+        this.extractData();
       }
     });
   }
 
-  extractTrackPopularities() {
+  extractData() {
     // Iterate over each playlist item and extract track popularity
     this.playlistItemData.forEach((item) => {
       if (item.track) {
         this.trackPopularities.push(item.track.popularity);
+        if (item.track.explicit == true){
+          this.explicitCount += 1;
+        }
       }
     });
     console.log("Track Popularities", this.trackPopularities);
+    console.log("Explicit count", this.explicitCount)
     
-    this.generateHistogram()
+    this.generatePopulairtyHistogram();
+    this.generateExplicitChart();
   }
 
-  generateHistogram() {
+  generatePopulairtyHistogram() {
     // Initialize an array to hold the histogram data
      const histogramData = Array.from({ length: 10 }, () => 0); // 10 bins for 0-100 range
   
@@ -109,7 +121,20 @@ export class GraphsComponent implements OnInit {
         }
       ]
     };
-    console.log("updated data obj", this.popularityHistogramData)
+    console.log("updated pop data obj", this.popularityHistogramData)
+  }
+
+  generateExplicitChart(){
+    this.explicitChartData = {
+      labels: ['Explicit', 'Clean'],
+      datasets: [
+        {
+          data: [(this.explicitCount/this.playlistLength),1-(this.explicitCount/this.playlistLength)],
+          label: 'explicitness'
+        }
+      ]
+    };
+    console.log("updated explicit data obj", this.explicitChartData)
   }
   
 }
