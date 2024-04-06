@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <img src="../../../assets/images/profile_icon.png" alt="profileIcon" class="float-end" />
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <div class="container">
+                <div *ngIf="!accessToken">
+                  <button class="btn btn-dark float-end" (click)="redirectToSpotifyLogin()">Login to Spotify</button>
+                </div>
+                <div *ngIf="accessToken">
+                  <p class="float-end">Logged in</p>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>

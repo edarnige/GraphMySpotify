@@ -1,0 +1,17 @@
+// Define gradient mixin
+@mixin gradient-y($start-color: #1E1E1E, $end-color: #101010, $start-percent: null, $end-percent: null) {
+    background-image: linear-gradient(to bottom, $start-color $start-percent, $end-color $end-percent);
+}
+
+// Use the mixin within the .gradient class
+.gradient {
+    @include gradient-y;
+    width: 40rem;
+    height: 20rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+}
+
+p {
+    margin-top: 2rem;
+}

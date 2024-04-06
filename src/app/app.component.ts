@@ -6,7 +6,11 @@ import { GraphMySpotifyComponent } from './graph-my-spotify/graph-my-spotify.com
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, GraphMySpotifyComponent],
+  imports: [
+    CommonModule, 
+    RouterOutlet, 
+    GraphMySpotifyComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

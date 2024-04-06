@@ -1,1 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
+// Set background to black
+html { background-color: #101010; }
+
+// Override bootstrap defaults
+$body-bg: #101010;
+// $body-color: #101010;
+
+// Use bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+//Use imported fonts
+@font-face {
+    font-family: 'PlusJakartaSans-Bold';
+    src: url('./assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'PlusJakartaSans-Regular';
+    src: url('./assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Regular.ttf');
+}
+
+// Global stlyes
+h1 {
+    color: #16e58b;
+    font-family: 'PlusJakartaSans-Bold';
+    font-size: 4rem;
+}
+
+p {
+    color: white;
+    font-family: 'PlusJakartaSans-Regular';
+    font-size: 1.5rem;
+}
