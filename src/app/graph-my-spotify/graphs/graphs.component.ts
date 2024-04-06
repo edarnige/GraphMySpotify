@@ -2,16 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, ChartType } from "chart.js";
+import { TagCloudComponent } from 'angular-tag-cloud-module';
+import { CloudData } from 'angular-tag-cloud-module';
 import { SearchPlaylistService } from '../../services/search-playlist.service';
-import { SpotifyPlaylist, SpotifyPlaylistItem } from '../../models/playlist.model';
-
+import { SpotifyPlaylist, SpotifyPlaylistItem } from '../../models/playlist.model'; // use models 
+import { Artists } from '../../models/artist.model';
 
 @Component({
   selector: 'app-graphs',
   standalone: true,
   imports: [
     CommonModule,
-    NgChartsModule
+    NgChartsModule,
+    TagCloudComponent
     ],
   templateUrl: './graphs.component.html',
   styleUrl: './graphs.component.scss'
@@ -23,10 +26,13 @@ export class GraphsComponent implements OnInit {
   explicitCount: number = 0; // Number of explicit songs in a playlist
   playlistLength: number = 0; 
   releaseYears: number[] = [];
-  
+  artistCounts: { [artistId: string]: number } = {};
+  genreCounts: { [genre: string]: number } = {}; // Object to store genre counts
+
   public popularityHistogramData!: ChartConfiguration<'bar'>['data'] 
   public explicitChartData!: ChartConfiguration<'pie'>['data'] 
   public releaseDecadeHistogramData!: ChartConfiguration<'bar'>['data']
+  cloudData: CloudData[] = [];
 
   constructor(
     public playlistService: SearchPlaylistService,
@@ -96,15 +102,23 @@ export class GraphsComponent implements OnInit {
         if (item.track.album){
           this.releaseYears.push(Number(item.track.album.release_date.split("-")[0]))
         }
+
+        item.track.artists.forEach((artist: any) => {
+          const artistId = artist.id;
+          this.artistCounts[artistId] = (this.artistCounts[artistId] || 0) + 1;
+      });
+
       }
     });
     console.log("Track Popularities", this.trackPopularities);
     console.log("Explicit count", this.explicitCount)
     console.log("release years", this.releaseYears)
+    console.log("artists", this.artistCounts)
     
     this.generatePopulairtyHistogram();
     this.generateExplicitChart();
     this.generateReleaseDecadeHistogram();
+    this.generateGenreChart();
   }
 
   generatePopulairtyHistogram() {
@@ -174,6 +188,34 @@ export class GraphsComponent implements OnInit {
           ]
         };
         console.log("updated pop data obj", this.releaseDecadeHistogramData)
+  }
+
+  generateGenreChart() {
+    // Clear the cloudData array
+    this.cloudData = [];
+
+    // Extract genres from artist info
+    const artistIds = Object.keys(this.artistCounts).join(',');
+    console.log("artist ids to send",artistIds)
+    this.playlistService.getArtistsInfo(artistIds).subscribe((data: Artists) => {
+    data.artists.forEach((artist) => {
+      console.log("artist", artist.name)
+      // Get the count of appearances for the current artist
+      const artistCount = this.artistCounts[artist.id];
+      artist.genres.forEach((genre) => {
+        console.log("genre", genre)
+        this.genreCounts[genre] = (this.genreCounts[genre] || 0) + artistCount;
+      })
+    });
+    console.log("genre counts", this.genreCounts)
+    // After populating genreCounts, iterate over it to populate cloudData
+    for (const genre in this.genreCounts) {
+        // Add each genre and its count as a CloudData object to the cloudData array
+        // update reference with spread
+        this.cloudData = [...this.cloudData, { text: genre, weight: this.genreCounts[genre] } ]
+    }
+    console.log("cloudData", this.cloudData)
+    });
   }
   
 }

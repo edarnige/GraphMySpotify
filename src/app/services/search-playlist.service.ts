@@ -3,6 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { LoginService } from './login.service';
 import { SpotifyPlaylists } from '../models/playlist.model';
+import { Artists } from '../models/artist.model';
 
 
 @Injectable({
@@ -55,5 +56,15 @@ export class SearchPlaylistService {
       'Authorization': `Bearer ${this.loginService.getToken()}`,
     });
     return this.http.get<SpotifyPlaylists>(nextUrl, { headers });
+  }
+
+  // Get multiple artists info
+  getArtistsInfo(artistIds: string): Observable<Artists> {
+    const artistsUrl = `${this.spotifyApiUrl}/artists/?ids=` + artistIds; //Handle too many ids
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.loginService.getToken()}`,
+    });
+
+    return this.http.get<Artists>(artistsUrl, { headers });
   }
 }
