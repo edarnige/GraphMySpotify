@@ -22,9 +22,11 @@ export class GraphsComponent implements OnInit {
   trackPopularities: number[] = []; // Array to store track popularities
   explicitCount: number = 0; // Number of explicit songs in a playlist
   playlistLength: number = 0; 
+  releaseYears: number[] = [];
   
   public popularityHistogramData!: ChartConfiguration<'bar'>['data'] 
   public explicitChartData!: ChartConfiguration<'pie'>['data'] 
+  public releaseDecadeHistogramData!: ChartConfiguration<'bar'>['data']
 
   constructor(
     public playlistService: SearchPlaylistService,
@@ -91,13 +93,18 @@ export class GraphsComponent implements OnInit {
         if (item.track.explicit == true){
           this.explicitCount += 1;
         }
+        if (item.track.album){
+          this.releaseYears.push(Number(item.track.album.release_date.split("-")[0]))
+        }
       }
     });
     console.log("Track Popularities", this.trackPopularities);
     console.log("Explicit count", this.explicitCount)
+    console.log("release years", this.releaseYears)
     
     this.generatePopulairtyHistogram();
     this.generateExplicitChart();
+    this.generateReleaseDecadeHistogram();
   }
 
   generatePopulairtyHistogram() {
@@ -135,6 +142,38 @@ export class GraphsComponent implements OnInit {
       ]
     };
     console.log("updated explicit data obj", this.explicitChartData)
+  }
+
+  generateReleaseDecadeHistogram(){
+        // Find the earliest and latest release years in the playlist
+        const minYear = Math.min(...this.releaseYears);
+        const maxYear = Math.max(...this.releaseYears);
+        // Calculate the starting decade based on the minimum year
+        const startDecade = Math.floor(minYear / 10) * 10;
+        // Calculate the number of decades
+        const numDecades = Math.ceil((maxYear - startDecade + 1) / 10);
+
+        // Initialize an array to hold the histogram data
+        const histogramData = Array.from({ length: numDecades }, () => 0);
+  
+        // Group track popularities into bins of size 10
+        this.releaseYears.forEach((year) => {
+          const binIndex = Math.floor((year - startDecade) / 10); // Calculate the bin index relative to the minimum year
+          histogramData[binIndex]++; // Increment the frequency of the corresponding bin
+      });
+      
+        console.log("Histogram Data", histogramData);
+        // Update releaseDecadeHistogramData
+        this.releaseDecadeHistogramData = {
+          labels: Array.from({ length: numDecades }, (_, i) => `${startDecade + i * 10}-${startDecade + (i + 1) * 10 - 1}`),
+          datasets: [
+            {
+              data: histogramData,
+              label: 'Decade Frequency'
+            }
+          ]
+        };
+        console.log("updated pop data obj", this.releaseDecadeHistogramData)
   }
   
 }
