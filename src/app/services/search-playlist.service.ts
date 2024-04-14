@@ -60,7 +60,7 @@ export class SearchPlaylistService {
 
   // Get multiple artists info
   getArtistsInfo(artistIds: string): Observable<Artists> {
-    const artistsUrl = `${this.spotifyApiUrl}/artists/?ids=` + artistIds; //Handle too many ids
+    const artistsUrl = `${this.spotifyApiUrl}/artists/?ids=` + artistIds;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.loginService.getToken()}`,
     });

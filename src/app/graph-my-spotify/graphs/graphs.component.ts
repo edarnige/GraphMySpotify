@@ -195,26 +195,42 @@ export class GraphsComponent implements OnInit {
     this.cloudData = [];
 
     // Extract genres from artist info
-    const artistIds = Object.keys(this.artistCounts).join(',');
-    console.log("artist ids to send",artistIds)
-    this.playlistService.getArtistsInfo(artistIds).subscribe((data: Artists) => {
-    data.artists.forEach((artist) => {
-      console.log("artist", artist.name)
-      // Get the count of appearances for the current artist
-      const artistCount = this.artistCounts[artist.id];
-      artist.genres.forEach((genre) => {
-        console.log("genre", genre)
-        this.genreCounts[genre] = (this.genreCounts[genre] || 0) + artistCount;
-      })
-    });
-    console.log("genre counts", this.genreCounts)
-    // After populating genreCounts, iterate over it to populate cloudData
-    for (const genre in this.genreCounts) {
-        // Add each genre and its count as a CloudData object to the cloudData array
-        // update reference with spread
-        this.cloudData = [...this.cloudData, { text: genre, weight: this.genreCounts[genre] } ]
+    const artistIds = Object.keys(this.artistCounts);
+    const batchSize = 50;
+
+    // Get artist infos by batches
+    for (let i = 0; i < artistIds.length; i += batchSize) {
+        const batch = artistIds.slice(i, i + batchSize).join(',');
+        this.fetchArtistInfo(batch);
     }
-    console.log("cloudData", this.cloudData)
+}
+
+  fetchArtistInfo(artistIds: string) {
+    this.playlistService.getArtistsInfo(artistIds).subscribe((data: Artists) => {
+        data.artists.forEach((artist) => {
+            // Get the count of appearances for the current artist to weight the genre
+            const artistCount = this.artistCounts[artist.id];
+            artist.genres.forEach((genre) => {
+                this.genreCounts[genre] = (this.genreCounts[genre] || 0) + artistCount;
+            });
+        });
+
+        // Populate cloudData
+        for (const genre in this.genreCounts) {
+          // Check if the genre already exists in cloudData
+          const existingGenreIndex = this.cloudData.findIndex(item => item.text.toLowerCase() === genre.toLowerCase());
+          if (existingGenreIndex !== -1) {
+              // If the genre exists, update its weight
+              this.cloudData[existingGenreIndex].weight += this.genreCounts[genre];
+          } else {
+              // Otherwise, add it to the list
+              this.cloudData.push({ text: genre, weight: this.genreCounts[genre] });
+
+          }
+      }
+      // Make sure data is updated with new ref so that the chart will detect a change
+      this.cloudData = [ ...this.cloudData]
+      console.log("cloudData", this.cloudData);
     });
   }
   
