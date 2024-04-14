@@ -51,6 +51,16 @@ export class GraphsComponent implements OnInit {
   }
 
   fetchPlaylistItems(playlistId: string) {
+    // Clear existing data in case new playlist is selected
+    this.playlistItemData = [];
+    this.trackPopularities = [];
+    this.explicitCount = 0;
+    this.playlistLength = 0;
+    this.releaseYears = [];
+    this.artistCounts = {};
+    this.genreCounts = {};
+    this.cloudData = [];
+
     this.playlistService.getPlaylistItems(playlistId).subscribe((data) => {
       console.log("Playlist items", data);
       console.log("items", data.items);
