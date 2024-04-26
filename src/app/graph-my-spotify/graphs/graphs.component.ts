@@ -5,8 +5,8 @@ import { ChartConfiguration, ChartOptions, ChartType } from "chart.js";
 import { TagCloudComponent } from 'angular-tag-cloud-module';
 import { CloudData } from 'angular-tag-cloud-module';
 import { SearchPlaylistService } from '../../services/search-playlist.service';
-import { SpotifyPlaylist, SpotifyPlaylistItem } from '../../models/playlist.model'; // use models 
-import { Artists } from '../../models/artist.model';
+import { SpotifyPlaylistItem } from '../../models/playlist.model';
+import { Artist, Artists } from '../../models/artist.model';
 
 @Component({
   selector: 'app-graphs',
@@ -21,7 +21,7 @@ import { Artists } from '../../models/artist.model';
 })
 export class GraphsComponent implements OnInit {
 
-  playlistItemData: any[] = [];
+  playlistItemData: SpotifyPlaylistItem[] = [];
   trackPopularities: number[] = []; // Array to store track popularities
   explicitCount: number = 0; // Number of explicit songs in a playlist
   playlistLength: number = 0; 
@@ -40,7 +40,7 @@ export class GraphsComponent implements OnInit {
 
   ngOnInit() {
     // Subscribe to changes in the selected playlist
-    this.playlistService.selectedPlaylistSubject.subscribe((selectedPlaylist) => { // Need to run every time submit is clicked
+    this.playlistService.selectedPlaylistSubject.subscribe((selectedPlaylist) => {
       if (selectedPlaylist) {
         // Fetch playlist items when a playlist is selected
         this.fetchPlaylistItems(selectedPlaylist);
@@ -113,7 +113,7 @@ export class GraphsComponent implements OnInit {
           this.releaseYears.push(Number(item.track.album.release_date.split("-")[0]))
         }
 
-        item.track.artists.forEach((artist: any) => {
+        item.track.artists.forEach((artist: Artist) => {
           const artistId = artist.id;
           this.artistCounts[artistId] = (this.artistCounts[artistId] || 0) + 1;
       });
