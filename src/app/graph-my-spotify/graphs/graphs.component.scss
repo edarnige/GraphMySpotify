@@ -1,4 +1,28 @@
 .chartBlock {
     width: 400px;
     height: 400px;
+    margin-left: 1rem;
 }
+
+p {
+    text-align: center;
+}
+
+.chartContainer {
+    display: flex;
+    margin-top: 4rem;
+}
+
+.centeredChart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+  }
+  
+.chartItem {
+    flex: 1 0 calc(33.33% - 10px);
+    margin-bottom: 1rem;
+}
+  

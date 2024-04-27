@@ -44,6 +44,5 @@ export class LoginComponent {
   redirectToSpotifyLogin() {
     const authorizationUrl = this.loginService.getAuthorizationUrl();
     window.location.href = authorizationUrl;
-    console.log('authurl', authorizationUrl);
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LoginService } from '../../services/login.service';
 import { CommonModule } from '@angular/common';
-import { SpotifyPlaylist } from '../../models/playlist.model'
+import { SpotifyPlaylistItem } from '../../models/playlist.model'
 import { SearchPlaylistService } from '../../services/search-playlist.service';
 
 
@@ -17,7 +17,7 @@ import { SearchPlaylistService } from '../../services/search-playlist.service';
   styleUrl: './search-playlist.component.scss'
 })
 export class SearchPlaylistComponent implements OnInit {
-  playlists: SpotifyPlaylist[] = [];
+  playlists: SpotifyPlaylistItem[] = [];
   selectedPlaylist: string = '';
 
   constructor(

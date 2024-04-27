@@ -1,11 +1,60 @@
-<p>Track popularity</p>
-<div class="chartBlock">
-  <canvas id="popChart" 
-    baseChart 
-    width="400" 
-    height="400"
-    [type]="'bar'"
-    [data]="popularityHistogramData">
-  </canvas>
+<div class="chartContainer">
+  <div *ngIf="popularityHistogramData" class="chartItem">
+    <p>Popularity</p>
+    <div class="chartBlock">
+      <canvas id="popChart" 
+        baseChart 
+        width="400" 
+        height="400"
+        [type]="'bar'"
+        [data]="popularityHistogramData"
+        [options]="popularityHistogramOptions"
+        >
+      </canvas>
+    </div>
+  </div>
+
+  <div *ngIf="explicitChartData" class="chartItem">
+    <p>Explicitness</p>
+    <div class="chartBlock">
+      <canvas id="explicitChart" 
+        baseChart 
+        width="400" 
+        height="400"
+        [type]="'pie'"
+        [data]="explicitChartData"
+        [options]="explicitChartOptions"
+        >
+      </canvas>
+    </div>
+  </div>
+
+  <div *ngIf="releaseDecadeHistogramData" class="chartItem">
+    <p>Release decade</p>
+    <div class="chartBlock">
+      <canvas id="releaseChart" 
+        baseChart 
+        width="400" 
+        height="400"
+        [type]="'bar'"
+        [data]="releaseDecadeHistogramData"
+        [options]="decadeHistogramOptions"
+        >
+      </canvas>
+    </div>
+  </div>
 </div>
-  
+
+<div class="centeredChart">
+  <div *ngIf="cloudData.length > 0">
+    <p>Genres</p>
+    <div class="">
+      <angular-tag-cloud
+        [data]="cloudData"
+        [width]="1000"
+        [height]="400"
+        [overflow]="false">
+      </angular-tag-cloud>
+    </div>
+  </div>
+</div>
