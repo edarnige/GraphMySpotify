@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { NgChartsModule } from 'ng2-charts';
-import { ChartConfiguration, ChartOptions, ChartType } from "chart.js";
+import { ChartConfiguration, ChartOptions } from "chart.js";
 import { TagCloudComponent } from 'angular-tag-cloud-module';
 import { CloudData } from 'angular-tag-cloud-module';
 import { SearchPlaylistService } from '../../services/search-playlist.service';
@@ -32,7 +32,84 @@ export class GraphsComponent implements OnInit {
   public popularityHistogramData!: ChartConfiguration<'bar'>['data'] 
   public explicitChartData!: ChartConfiguration<'pie'>['data'] 
   public releaseDecadeHistogramData!: ChartConfiguration<'bar'>['data']
-  cloudData: CloudData[] = [];
+  public cloudData: CloudData[] = [];
+
+  public popularityHistogramOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: '# songs',
+          font: {
+            size: 16
+          }
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Popularity score (0-100)',
+          font: {
+            size: 16
+          }
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false
+      },
+    }   
+  }
+
+  public decadeHistogramOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: '# songs',
+          font: {
+            size: 16
+          }
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Decade',
+          font: {
+            size: 16
+          }
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false
+      }
+    }   
+  }
+
+  public explicitChartOptions: ChartOptions<'pie'> = {
+    plugins: {
+      legend: {
+        labels: {
+            font: {
+                size: 16
+            }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label(tooltipItem) {
+            return Number(tooltipItem.formattedValue).toFixed(1) + '%'
+          }
+        } 
+      }
+    }
+  };
 
   constructor(
     public playlistService: SearchPlaylistService,
@@ -148,7 +225,8 @@ export class GraphsComponent implements OnInit {
       datasets: [
         {
           data: histogramData,
-          label: 'Popularity Frequency'
+          label: 'Popularity Frequency',
+          backgroundColor: 'rgba(240, 56, 167)'
         }
       ]
     };
@@ -160,8 +238,12 @@ export class GraphsComponent implements OnInit {
       labels: ['Explicit', 'Clean'],
       datasets: [
         {
-          data: [(this.explicitCount/this.playlistLength),1-(this.explicitCount/this.playlistLength)],
-          label: 'explicitness'
+          data: [(this.explicitCount/this.playlistLength)*100,(1-(this.explicitCount/this.playlistLength))*100],
+          // label: '%',
+          backgroundColor: [
+            'rgba(252, 71, 49)', // Color for "Explicit"
+            'rgba(29, 185, 84)' // Color for "Clean"
+          ]
         }
       ]
     };
@@ -193,7 +275,8 @@ export class GraphsComponent implements OnInit {
           datasets: [
             {
               data: histogramData,
-              label: 'Decade Frequency'
+              label: 'Decade Frequency',
+              backgroundColor: 'rgba(63, 4, 244)'
             }
           ]
         };
