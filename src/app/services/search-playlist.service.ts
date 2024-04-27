@@ -55,10 +55,12 @@ export class SearchPlaylistService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.loginService.getToken()}`,
     });
+    
     return this.http.get<SpotifyPlaylist>(nextUrl, { headers });
   }
 
   // Get multiple artists info
+  // https://developer.spotify.com/documentation/web-api/reference/get-multiple-artists
   getArtistsInfo(artistIds: string): Observable<Artists> {
     const artistsUrl = `${this.spotifyApiUrl}/artists/?ids=` + artistIds;
     const headers = new HttpHeaders({

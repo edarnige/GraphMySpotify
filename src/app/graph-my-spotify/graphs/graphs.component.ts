@@ -139,8 +139,6 @@ export class GraphsComponent implements OnInit {
     this.cloudData = [];
 
     this.playlistService.getPlaylistItems(playlistId).subscribe((data) => {
-      console.log("Playlist items", data);
-      console.log("items", data.items);
       // Append the items to the playlistItemData array
       this.playlistItemData.push(...data.items);
 
@@ -149,7 +147,6 @@ export class GraphsComponent implements OnInit {
         // If next URL is available, fetch the next set of items
         this.fetchNextItems(data.next);
       } else {
-        console.log("playlist item count", this.playlistItemData.length)
         this.playlistLength = this.playlistItemData.length;
         this.extractData();
       }
@@ -160,18 +157,14 @@ export class GraphsComponent implements OnInit {
   fetchNextItems(nextUrl: string) {
     // Fetch the next set of items using the next URL
     this.playlistService.fetchNextItems(nextUrl).subscribe((data) => {
-      console.log("Next playlist items", data);
-      console.log("next items", data.items);
       // Append the new items to the existing playlistItemData array
       this.playlistItemData.push(...data.items);
-      console.log("updated playlist items", this.playlistItemData)
 
       // Check if there are more items available in the next response
       if (data.next) {
         // If next URL is available, recursively fetch the next set of items
         this.fetchNextItems(data.next);
       } else {
-        console.log("playlist item count", this.playlistItemData.length)
         this.playlistLength = this.playlistItemData.length;
         this.extractData();
       }
@@ -197,10 +190,6 @@ export class GraphsComponent implements OnInit {
 
       }
     });
-    console.log("Track Popularities", this.trackPopularities);
-    console.log("Explicit count", this.explicitCount)
-    console.log("release years", this.releaseYears)
-    console.log("artists", this.artistCounts)
     
     this.generatePopulairtyHistogram();
     this.generateExplicitChart();
@@ -218,7 +207,6 @@ export class GraphsComponent implements OnInit {
       histogramData[binIndex]++; // Increment the frequency of the corresponding bin
     });
   
-    console.log("Histogram Data", histogramData);
     // Update popularityHistogramData
     this.popularityHistogramData = {
       labels: ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99'],
@@ -230,7 +218,6 @@ export class GraphsComponent implements OnInit {
         }
       ]
     };
-    console.log("updated pop data obj", this.popularityHistogramData)
   }
 
   generateExplicitChart(){
@@ -247,7 +234,6 @@ export class GraphsComponent implements OnInit {
         }
       ]
     };
-    console.log("updated explicit data obj", this.explicitChartData)
   }
 
   generateReleaseDecadeHistogram(){
@@ -268,7 +254,6 @@ export class GraphsComponent implements OnInit {
           histogramData[binIndex]++; // Increment the frequency of the corresponding bin
       });
       
-        console.log("Histogram Data", histogramData);
         // Update releaseDecadeHistogramData
         this.releaseDecadeHistogramData = {
           labels: Array.from({ length: numDecades }, (_, i) => `${startDecade + i * 10}-${startDecade + (i + 1) * 10 - 1}`),
@@ -280,7 +265,6 @@ export class GraphsComponent implements OnInit {
             }
           ]
         };
-        console.log("updated pop data obj", this.releaseDecadeHistogramData)
   }
 
   generateGenreChart() {
@@ -323,8 +307,6 @@ export class GraphsComponent implements OnInit {
       }
       // Make sure data is updated with new ref so that the chart will detect a change
       this.cloudData = [ ...this.cloudData]
-      console.log("cloudData", this.cloudData);
     });
   }
-  
 }
