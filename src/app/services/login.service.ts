@@ -7,7 +7,7 @@ import { environment } from '../../../env';
 })
 export class LoginService {
   private clientId = environment.CLIENT_ID; // Spotify Developer Dashboard client ID (stored in env.ts)
-  private redirectUri = 'http://localhost:4200/'; // Dashboard redirect URI
+  private redirectUri = 'https://edarnige.github.io/GraphMySpotify/'; // Dashboard redirect URI
   private _token: string = '';
 
   setToken(token: string): void {
